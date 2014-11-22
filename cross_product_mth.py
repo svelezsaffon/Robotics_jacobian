@@ -3,6 +3,7 @@ __author__ = 'santiago & spencer'
 
 import helper_functions
 import check_functions
+import inverse_jacobian
 import numpy
 
 
@@ -44,10 +45,18 @@ class cross_product_method(object):
 
         pos_vectors=self.find_position_vector_previous_link_referenced(based_mat)
 
+        return self.calculate_jacobians_map(z_vectors,pos_vectors)
 
-        jacobians=self.calculate_jacobians(z_vectors,pos_vectors)
 
-        return jacobians
+
+
+    def map_of_jacs_into_matrix(self,jacobians):
+        jac_mat=[]
+
+        for i in range(0,6):
+                jac_mat.append(numpy.array(jacobians[i]))
+
+        return numpy.transpose(jac_mat)
 
     def error_statistics(self):
 
@@ -94,11 +103,32 @@ class cross_product_method(object):
 
         return error
 
+    def calculate_jacobians_matrix(self,zvectors,pvectors):
+        mat=[
+            [0,0,0,0,0,0],
+            [0,0,0,0,0,0],
+            [0,0,0,0,0,0],
+            [0,0,0,0,0,0],
+            [0,0,0,0,0,0],
+            [0,0,0,0,0,0]
+        ]
 
-    def calculate_jacobians(self,zvectors,pvectors):
+        for i in range(0,len(pvectors)):
+            jac=self.cross_product(zvectors[i],pvectors[i])
+
+            for j in range(0,3):
+                mat[j][i]=jac[j]
+
+            mat[i][3]=zvectors[i][0]
+            mat[i][4]=zvectors[i][1]
+            mat[i][5]=zvectors[i][2]
+
+
+        return numpy.matrix(mat)
+
+    def calculate_jacobians_map(self,zvectors,pvectors):
         jacobians={}
         for pos in range(0,len(pvectors)):
-            jac=[]
             jac=self.cross_product(zvectors[pos],pvectors[pos])
             jac.append(zvectors[pos][0])
             jac.append(zvectors[pos][1])
@@ -111,11 +141,10 @@ class cross_product_method(object):
 
     def cross_product(self,a,b):
         cross=numpy.cross(a,b)
-        ret=[]
-        ret.append(cross[0])
-        ret.append(cross[1])
-        ret.append(cross[2])
-
+        ret=[0,0,0]
+        ret[0]=(cross[0])
+        ret[1]=(cross[1])
+        ret[2]=(cross[2])
 
         return ret
 
@@ -229,10 +258,23 @@ def main():
 
     helper_functions.load_DH_table()
     check_functions.load_DH_table()
-
+    inverser=inverse_jacobian.inverse_method()
     cros= cross_product_method()
+
     angles=[56,47,23,14,5,8]
-    print cros.solve_angles(angles)
+
+
+    jac= cros.solve_angles(angles)
+
+
+    matjacs= cros.map_of_jacs_into_matrix(jac)
+
+
+    moore= inverser.moore_penrose_equation(matjacs)
+
+    print inverser.property_4(matjacs,moore)
+
+
 
 
 
