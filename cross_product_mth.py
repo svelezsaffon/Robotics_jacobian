@@ -50,6 +50,8 @@ class cross_product_method(object):
         real= self.checker.check_j5()
         pos=4
 
+
+        ##this part is just to check the error.
         error=[0,0,0,0,0,0]
         error[0]= numpy.abs(real[0][0]-jacobians[pos][0])
         error[1]= numpy.abs(real[1][0]-jacobians[pos][1])
