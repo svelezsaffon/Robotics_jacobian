@@ -212,6 +212,7 @@ class cross_product_method(object):
          They will be stored in a dictionary in the following structure
          dict[1] is the matrix 0A1
          dict[2] is the matrix 0A2
+         dict[3] is the matrix 0A3
          ....
         """
     def create_link_transformation_base_referenced(self,matrix):
