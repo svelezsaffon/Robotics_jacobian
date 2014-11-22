@@ -50,10 +50,14 @@ class cross_product_method(object):
         real= self.checker.check_j5()
         pos=4
 
-        error=[0,0,0]
+        error=[0,0,0,0,0,0]
         error[0]= numpy.abs(real[0][0]-jacobians[pos][0])
         error[1]= numpy.abs(real[1][0]-jacobians[pos][1])
         error[2]= numpy.abs(real[2][0]-jacobians[pos][2])
+        error[3]= numpy.abs(real[3][0]-jacobians[pos][3])
+        error[4]= numpy.abs(real[4][0]-jacobians[pos][4])
+        error[5]= numpy.abs(real[5][0]-jacobians[pos][5])
+
 
 
         print "error"
@@ -64,7 +68,12 @@ class cross_product_method(object):
     def calculate_jacobians(self,zvectors,pvectors):
         jacobians={}
         for pos in range(0,len(pvectors)):
-            jacobians[pos]=self.cross_product(zvectors[pos],pvectors[pos])
+            jac=[]
+            jac=self.cross_product(zvectors[pos],pvectors[pos])
+            jac.append(zvectors[pos][0])
+            jac.append(zvectors[pos][1])
+            jac.append(zvectors[pos][2])
+            jacobians[pos]=jac
 
         return jacobians
 
@@ -76,6 +85,7 @@ class cross_product_method(object):
         ret.append(cross[0])
         ret.append(cross[1])
         ret.append(cross[2])
+
 
         return ret
 
@@ -199,6 +209,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
