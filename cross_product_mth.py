@@ -47,24 +47,52 @@ class cross_product_method(object):
 
         jacobians=self.calculate_jacobians(z_vectors,pos_vectors)
 
-        real= self.checker.check_j5()
-        pos=4
+        return jacobians
+
+    def error_statistics(self):
+
+        file=open("cross_stats.txt",'ws')
+        angles=[0,0,0,0,0,0]
+        for t1 in self.helper.get_range(1):
+            angles[0]=t1
+            for t2 in self.helper.get_range(2):
+                angles[1]=t1
+                for t3 in self.helper.get_range(3):
+                    angles[2]=t1
+                    for t1 in self.helper.get_range(4):
+                        angles[3]=t1
+                        for t2 in self.helper.get_range(5):
+                            angles[4]=t1
+                            for t3 in self.helper.get_range(6):
+                                angles[5]=t1
+                                self.checker.set_angles_to_check(angles)
+                                jack=self.solve_angles(angles)
+                                error=self.calculate_errors(self.checker.check_j1(),jack[0])
+                                file.write(str(error))
+                                error=self.calculate_errors(self.checker.check_j2(),jack[1])
+                                file.write(str(error))
+                                error=self.calculate_errors(self.checker.check_j3(),jack[2])
+                                file.write(str(error))
+                                error=self.calculate_errors(self.checker.check_j4(),jack[3])
+                                file.write(str(error))
+                                error=self.calculate_errors(self.checker.check_j5(),jack[4])
+                                file.write(str(error))
+                                error=self.calculate_errors(self.checker.check_j6(),jack[5])
+                                file.write(str(error))
 
 
-        ##this part is just to check the error.
+        file.close()
+
+    def calculate_errors(self,real,jac):
         error=[0,0,0,0,0,0]
-        error[0]= numpy.abs(real[0][0]-jacobians[pos][0])
-        error[1]= numpy.abs(real[1][0]-jacobians[pos][1])
-        error[2]= numpy.abs(real[2][0]-jacobians[pos][2])
-        error[3]= numpy.abs(real[3][0]-jacobians[pos][3])
-        error[4]= numpy.abs(real[4][0]-jacobians[pos][4])
-        error[5]= numpy.abs(real[5][0]-jacobians[pos][5])
+        error[0]= numpy.abs(real[0][0]-jac[0])
+        error[1]= numpy.abs(real[1][0]-jac[1])
+        error[2]= numpy.abs(real[2][0]-jac[2])
+        error[3]= numpy.abs(real[3][0]-jac[3])
+        error[4]= numpy.abs(real[4][0]-jac[4])
+        error[5]= numpy.abs(real[5][0]-jac[5])
 
-
-
-        print "error"
-        print error
-
+        return error
 
 
     def calculate_jacobians(self,zvectors,pvectors):
@@ -202,9 +230,8 @@ def main():
     check_functions.load_DH_table()
 
     cros= cross_product_method()
-    angles=[100,25,32,0,0,0]
-
-    cros.solve_angles(angles)
+    angles=[56,47,23,14,5,8]
+    print cros.solve_angles(angles)
 
 
 

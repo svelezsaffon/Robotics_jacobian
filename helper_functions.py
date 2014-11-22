@@ -156,6 +156,9 @@ class helper(object):
         return matrix
 
 
+    def get_range(self,joint):
+        return dict[joint]['range']
+
 
     def create_0Ai_matrix(self,index,angles):
         matrix=self.create_t_matrix(1,angles[0])
