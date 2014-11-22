@@ -4,13 +4,75 @@ __author__ = 'santiago & spencer'
 import numpy
 
 
-global dict
+dict={}
+
+def load_DH_table():
+    global dict
+
+    joint={}
+    joint['theta']=100
+    joint['alpha']=-90
+    joint['a']=0
+    joint['d']=0
+    joint['range']=range(-160,160)
+
+    dict[1]=joint
+
+    joint1={}
+    joint1['theta']=25
+    joint1['alpha']=0
+    joint1['a']=0.4318
+    joint1['d']=0.14909
+    joint1['range']=range(-225,45)
+
+    dict[2]=joint1
+
+    joint2={}
+    joint2['theta']=32
+    joint2['alpha']=90
+    joint2['a']=-0.02032
+    joint2['d']=0
+    joint2['range']=range(-45,225)
+
+    dict[3]=joint2
+
+
+    joint3={}
+    joint3['theta']=0
+    joint3['alpha']=-90
+    joint3['a']=0
+    joint3['d']=0.43307
+    joint3['range']=range(-110,170)
+
+    dict[4]=joint3
+
+    joint4={}
+    joint4['theta']=0
+    joint4['alpha']=90
+    joint4['a']=0
+    joint4['d']=0
+    joint4['range']=range(-100,100)
+
+    dict[5]=joint4
+
+    joint5={}
+    joint5['theta']=0
+    joint5['alpha']=0
+    joint5['a']=0
+    joint5['d']=0.05625
+    joint5['range']=range(-266,266)
+
+    dict[6]=joint5
+
+
+
 
 def cosine(angle):
     return numpy.cos(angle)
 
 def sine(angle):
     return numpy.sin(angle)
+
 
 def cosine_deg(angle):
     return numpy.cos(numpy.radians(angle))
@@ -20,8 +82,15 @@ def sine_deg(angle):
 
 class check_cpm(object):
 
+    def __init__(self):
+        self.angles=[]
+
+
+    def set_angles_to_check(self,angle):
+        self.angles=angle
+
     def check_j1(self):
-        j1(dict[1]['theta'], dict[2]['theta'], dict[3]['theta'], dict[4]['theta'], dict[5]['theta'], dict[2]['d'], dict[2]['a'], dict[3]['a'], dict[4]['d'], dict[6]['d'])
+        return self.j1(self.angles[0], self.angles[1], self.angles[2], self.angles[3], self.angles[4], dict[2]['d'], dict[2]['a'], dict[3]['a'], dict[4]['d'], dict[6]['d'])
 
     def j1(self, theta1, theta2, theta3, theta4, theta5, d2, a2, a3, d4, d6):
         matrix = [[0],
@@ -39,7 +108,7 @@ class check_cpm(object):
         return matrix
 
     def check_j2(self):
-        j2(dict[1]['theta'], dict[2]['theta'], dict[3]['theta'], dict[4]['theta'], dict[5]['theta'], dict[2]['a'], dict[3]['a'], dict[4]['d'], dict[6]['d'])
+        return self.j2(self.angles[0], self.angles[1], self.angles[2], self.angles[3], self.angles[4], dict[2]['a'], dict[3]['a'], dict[4]['d'], dict[6]['d'])
 
     def j2(self, theta1, theta2, theta3, theta4, theta5, a2, a3, d4, d6):
         matrix = [[0],
@@ -57,7 +126,7 @@ class check_cpm(object):
         return matrix
 
     def check_j3(self):
-        j3(dict[1]['theta'], dict[2]['theta'], dict[3]['theta'], dict[4]['theta'], dict[5]['theta'], dict[3]['a'], dict[4]['d'], dict[6]['d'])
+        return self.j3(self.angles[0], self.angles[1], self.angles[2], self.angles[3], self.angles[4], dict[3]['a'], dict[4]['d'], dict[6]['d'])
 
     def j3(self, theta1, theta2, theta3, theta4, theta5, a3, d4, d6):
         matrix = [[0],
@@ -75,7 +144,7 @@ class check_cpm(object):
         return matrix
 
     def check_j4(self):
-        j4(dict[1]['theta'], dict[2]['theta'], dict[3]['theta'], dict[4]['theta'], dict[5]['theta'],  dict[6]['d'])
+       return self.j4(self.angles[0], self.angles[1], self.angles[2], self.angles[3], self.angles[4],  dict[6]['d'])
 
     def j4(self, theta1, theta2, theta3, theta4, theta5, d6):
         matrix = [[0],
@@ -93,7 +162,7 @@ class check_cpm(object):
         return matrix
 
     def check_j5(self):
-        j5(dict[1]['theta'], dict[2]['theta'], dict[3]['theta'], dict[4]['theta'], dict[5]['theta'],  dict[6]['d'])
+       return self.j5(self.angles[0], self.angles[1], self.angles[2], self.angles[3], self.angles[4],  dict[6]['d'])
 
     def j5(self, theta1, theta2, theta3, theta4, theta5, d6):
         matrix = [[0],
@@ -111,7 +180,7 @@ class check_cpm(object):
         return matrix
 
     def check_j6(self):
-        j6(dict[1]['theta'], dict[2]['theta'], dict[3]['theta'], dict[4]['theta'], dict[5]['theta'])
+       return self.j6(self.angles[0], self.angles[1], self.angles[2], self.angles[3], self.angles[4])
 
     def j6(self, theta1, theta2, theta3, theta4, theta5):
         matrix = [[0],
@@ -131,7 +200,7 @@ class check_cpm(object):
 class check_dtrm(object):
 
     def check_j1(self):
-        j1(dict[1]['theta'], dict[2]['theta'], dict[3]['theta'], dict[4]['theta'], dict[5]['theta'], dict[2]['d'], dict[2]['a'], dict[3]['a'], dict[4]['d'], dict[6]['d'])
+        self.j1(dict[1]['theta'], dict[2]['theta'], dict[3]['theta'], dict[4]['theta'], dict[5]['theta'], dict[2]['d'], dict[2]['a'], dict[3]['a'], dict[4]['d'], dict[6]['d'])
 
     def j1(self, theta1, theta2, theta3, theta4, theta5, d2, a2, a3, d4, d6):
         matrix = [[0],
@@ -149,7 +218,7 @@ class check_dtrm(object):
         return matrix
 
     def check_j2(self):
-        j2(dict[1]['theta'], dict[2]['theta'], dict[3]['theta'], dict[4]['theta'], dict[5]['theta'], dict[2]['a'], dict[3]['a'], dict[4]['d'], dict[6]['d'])
+        self.j2(dict[1]['theta'], dict[2]['theta'], dict[3]['theta'], dict[4]['theta'], dict[5]['theta'], dict[2]['a'], dict[3]['a'], dict[4]['d'], dict[6]['d'])
 
     def j2(self, theta1, theta2, theta3, theta4, theta5, a2, a3, d4, d6):
         matrix = [[0],
@@ -167,7 +236,7 @@ class check_dtrm(object):
         return matrix
 
     def check_j3(self):
-        j3(dict[1]['theta'], dict[2]['theta'], dict[3]['theta'], dict[4]['theta'], dict[5]['theta'], dict[3]['a'], dict[4]['d'], dict[6]['d'])
+        self.j3(dict[1]['theta'], dict[2]['theta'], dict[3]['theta'], dict[4]['theta'], dict[5]['theta'], dict[3]['a'], dict[4]['d'], dict[6]['d'])
 
     def j3(self, theta1, theta2, theta3, theta4, theta5, a3, d4, d6):
         matrix = [[0],
@@ -185,7 +254,7 @@ class check_dtrm(object):
         return matrix
 
     def check_j4(self):
-        j4(dict[1]['theta'], dict[2]['theta'], dict[3]['theta'], dict[4]['theta'], dict[5]['theta'],  dict[6]['d'])
+        self.j4(dict[1]['theta'], dict[2]['theta'], dict[3]['theta'], dict[4]['theta'], dict[5]['theta'],  dict[6]['d'])
 
     def j4(self, theta1, theta2, theta3, theta4, theta5, d6):
         matrix = [[0],
@@ -203,7 +272,7 @@ class check_dtrm(object):
         return matrix
 
     def check_j5(self):
-        j5(dict[1]['theta'], dict[2]['theta'], dict[3]['theta'], dict[4]['theta'], dict[5]['theta'],  dict[6]['d'])
+        self.j5(dict[1]['theta'], dict[2]['theta'], dict[3]['theta'], dict[4]['theta'], dict[5]['theta'],  dict[6]['d'])
 
     def j5(self, theta1, theta2, theta3, theta4, theta5, d6):
         matrix = [[0],
@@ -221,7 +290,7 @@ class check_dtrm(object):
         return matrix
 
     def check_j6(self):
-        j6(dict[1]['theta'], dict[2]['theta'], dict[3]['theta'], dict[4]['theta'], dict[5]['theta'])
+        self.j6(dict[1]['theta'], dict[2]['theta'], dict[3]['theta'], dict[4]['theta'], dict[5]['theta'])
 
     def j6(self, theta1, theta2, theta3, theta4, theta5):
         matrix = [[0],
