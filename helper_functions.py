@@ -167,3 +167,9 @@ class helper(object):
             matrix=self.multiply_matrix(matrix,self.create_t_matrix(mat,angles[mat-1]))
 
         return matrix
+
+    def create_iA6_matrix(self, index, angles):
+        matrix=self.create_t_matrix(i + 1,angles[i])
+        
+        for mat in range(i + 1, 6):
+            matrix = self.multiply_matrix(matrix,self.create_t_matrix(mat, angles[mat-1]))

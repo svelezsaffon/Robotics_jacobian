@@ -85,7 +85,6 @@ class check_cpm(object):
     def __init__(self):
         self.angles=[]
 
-
     def set_angles_to_check(self,angle):
         self.angles=angle
 
@@ -199,100 +198,106 @@ class check_cpm(object):
 
 class check_dtrm(object):
 
-    def check_j1(self):
-        self.j1(dict[1]['theta'], dict[2]['theta'], dict[3]['theta'], dict[4]['theta'], dict[5]['theta'], dict[2]['d'], dict[2]['a'], dict[3]['a'], dict[4]['d'], dict[6]['d'])
+    def __init__(self):
+        self.angles=[]
 
-    def j1(self, theta1, theta2, theta3, theta4, theta5, d2, a2, a3, d4, d6):
+    def set_angles_to_check(self,angle):
+        self.angles=angle
+
+    def check_j1(self):
+        self.j1(self.angles[1], self.angles[2], self.angles[3], self.angles[4], self.angles[5], dict[2]['d'], dict[2]['a'], dict[3]['a'], dict[4]['d'], dict[6]['d'])
+
+    def j1(self, theta2, theta3, theta4, theta5, theta6, d2, a2, a3, d4, d6):
         matrix = [[0],
                   [0],
                   [0],
                   [0],
                   [0],
                   [0]]
-        matrix[0][0] = 0
-        matrix[1][0] = 0
-        matrix[2][0] = 0
-        matrix[3][0] = 0
-        matrix[4][0] = 0
-        matrix[5][0] = 1
+        matrix[0][0] = (d6 * (cosine(theta2 + theta3) * cosine(theta4) * sine(theta5) + sine(theta2 + theta3) * cosine(theta5)) + d4 * sine(theta2 + theta3) + a3 * cosine(theta2 + theta3) + a2 * cosine(theta2)) * (sine(theta4) * cosine(theta5) * cosine(theta6) + cosine(theta4) * sine(theta6)) - (d6 * sine(theta4) * sine(theta5) + d2) * (cosine(theta2 + theta3) * (cosine(theta4) * cosine(theta5) * cosine(theta6) - sine(theta4) * sine(theta6)) - sine(theta2 + theta3) * sine(theta5) * cosine(theta6))
+        matrix[1][0] = (d6 * (cosine(theta2 + theta3) * cosine(theta4) * sine(theta5) + sine(theta2 + theta3) * cosine(theta5)) + d4 * sine(theta2 + theta3) + a3 * cosine(theta2 + theta3) + a2 * cosine(theta2)) * (-sine(theta4) * cosine(theta5) * sine(theta6) + cosine(theta4) * cosine(theta6)) - (d6 * sine(theta4) * sine(theta5) + d2) * (-cosine(theta2 + theta3) * (cosine(theta4) * cosine(theta5) * sine(theta6) - sine(theta4) * cosine(theta6)) - sine(theta2 + theta3) * sine(theta5) * sine(theta6))
+        matrix[2][0] = (d6 * (cosine(theta2 + theta3) * cosine(theta4) * sine(theta5) + sine(theta2 + theta3) * cosine(theta5)) + d4 * sine(theta2 + theta3) + a3 * cosine(theta2 + theta3) + a2 * cosine(theta2)) * (sine(theta4) * sine(theta5)) - (d6 * sine(theta4) * sine(theta5) + d2) * (cosine(theta2 + theta3) * cosine(theta4) * sine(theta5) + sine(theta2 + theta3) * cosine(theta5))
+        matrix[3][0] = -1 * (sine(theta2 + theta3) * (cosine(theta4) * cosine(theta5) * cosine(theta6) - sine(theta4) * sine(theta6)) + cosine(theta2 + theta3) * sine(theta5) * cosine(theta6))
+        matrix[4][0] = sine(theta2 + theta3) * (cosine(theta4) * cosine(theta5) * sine(theta6) - sine(theta4) * cosine(theta6)) + cosine(theta2 + theta3) * sine(theta5) * sine(theta6)
+        matrix[5][0] = -sine(theta2 + theta3) * cosine(theta4) * sine(theta5) + cosine(theta2 + theta3) * cosine(theta5)
         return matrix
 
     def check_j2(self):
-        self.j2(dict[1]['theta'], dict[2]['theta'], dict[3]['theta'], dict[4]['theta'], dict[5]['theta'], dict[2]['a'], dict[3]['a'], dict[4]['d'], dict[6]['d'])
+        self.j2(self.angles[1], self.angles[2], self.angles[3], self.angles[4], self.angles[5], dict[2]['a'], dict[3]['a'], dict[4]['d'], dict[6]['d'])
 
-    def j2(self, theta1, theta2, theta3, theta4, theta5, a2, a3, d4, d6):
+    def j2(self, theta2, theta3, theta4, theta5, theta6, a2, a3, d4, d6):
         matrix = [[0],
                   [0],
                   [0],
                   [0],
                   [0],
                   [0]]
-        matrix[0][0] = 0
-        matrix[1][0] = 0
-        matrix[2][0] = 0
-        matrix[3][0] = 0
-        matrix[4][0] = 0
-        matrix[5][0] = 1
+        matrix[0][0] = (cosine(theta4) * cosine(theta5) * cosine(theta6) - sine(theta4) * sine(theta6)) * (d6 * cosine(theta5) + d4 + a2 * sine(theta3)) + sine(theta5) * cosine(theta6) * (d6 * cosine(theta4) * sine(theta5) + a3 + a2 * cosine(theta3))
+        matrix[1][0] = -1 * (cosine(theta4) * cosine(theta5) * sine(theta6) + sine(theta4) * cosine(theta6)) * (d6 * cosine(theta5) + d4 + a2 * sine(theta3)) - sine(theta5) * sine(theta6) * (d6 * cosine(theta4) * sine(theta5) + a3 + a2 * cosine(theta3))
+        matrix[2][0] = cosine(theta4) * sine(theta5) * (d6 * cosine(theta5) + d4 + a2 * sine(theta3)) - cosine(theta5) * (d6 * cosine(theta4) * sine(theta5) + a3 + a2 * cosine(theta3))
+        matrix[3][0] = sine(theta4) * cosine(theta5) * cosine(theta6) + cosine(theta4) * sine(theta6)
+        matrix[4][0] = -sine(theta4) * cosine(theta5) * sine(theta6) + cosine(theta4) * cosine(theta6)
+        matrix[5][0] = sine(theta4) * sine(theta5)
         return matrix
 
     def check_j3(self):
-        self.j3(dict[1]['theta'], dict[2]['theta'], dict[3]['theta'], dict[4]['theta'], dict[5]['theta'], dict[3]['a'], dict[4]['d'], dict[6]['d'])
+        self.j3(self.angles[3], self.angles[4], self.angles[5], dict[3]['a'], dict[4]['d'], dict[6]['d'])
 
-    def j3(self, theta1, theta2, theta3, theta4, theta5, a3, d4, d6):
+    def j3(self, theta4, theta5, theta6, a3, d4, d6):
         matrix = [[0],
                   [0],
                   [0],
                   [0],
                   [0],
                   [0]]
-        matrix[0][0] = 0
-        matrix[1][0] = 0
-        matrix[2][0] = 0
-        matrix[3][0] = 0
-        matrix[4][0] = 0
-        matrix[5][0] = 1
+        matrix[0][0] = (a3 + d6 * cosine(theta4) * sine(theta5)) * (sine(theta5) * cosine(theta6)) + (d4 + d6 * cosine(theta5)) * (cosine(theta4) * cosine(theta5) * cosine(theta6) - sine(theta4) * sine(theta6))
+        matrix[1][0] = -1 * (a3 + d6 * cosine(theta4) * sine(theta5)) * (sine(theta5) * sine(theta6)) - (d4 + d6 * cosine(theta5)) * (cosine(theta4) * cosine(theta5) * sine(theta6) + sine(theta4) * cosine(theta6))
+        matrix[2][0] = -1 * (a3 + d6 * cosine(theta4) * sine(theta5)) * cosine(theta5) + (d4 + d6 * cosine(theta5)) * cosine(theta4) * sine(theta5)
+        matrix[3][0] = sine(theta4) * cosine(theta5) * cosine(theta6) + cosine(theta4) * sine(theta6)
+        matrix[4][0] = -sine(theta4) * cosine(theta5) * sine(theta6) + cosine(theta4) * cosine(theta6)
+        matrix[5][0] = sine(theta4) * sine(theta5)
         return matrix
 
     def check_j4(self):
-        self.j4(dict[1]['theta'], dict[2]['theta'], dict[3]['theta'], dict[4]['theta'], dict[5]['theta'],  dict[6]['d'])
+        self.j4(self.angles[4], self.angles[5], dict[6]['d'])
 
-    def j4(self, theta1, theta2, theta3, theta4, theta5, d6):
+    def j4(self, theta5, theta6, d6):
         matrix = [[0],
                   [0],
                   [0],
                   [0],
                   [0],
                   [0]]
-        matrix[0][0] = 0
-        matrix[1][0] = 0
+        matrix[0][0] = d6 * sine(theta5) * sine(theta6)
+        matrix[1][0] = d6 * sine(theta5) * cosine(theta6)
         matrix[2][0] = 0
-        matrix[3][0] = 0
-        matrix[4][0] = 0
-        matrix[5][0] = 1
+        matrix[3][0] = -sine(theta5) * cosine(theta6)
+        matrix[4][0] = sine(theta5) * sine(theta6)
+        matrix[5][0] = cosine(theta5)
         return matrix
 
     def check_j5(self):
-        self.j5(dict[1]['theta'], dict[2]['theta'], dict[3]['theta'], dict[4]['theta'], dict[5]['theta'],  dict[6]['d'])
+        self.j5(self.angles[5],  dict[6]['d'])
 
-    def j5(self, theta1, theta2, theta3, theta4, theta5, d6):
+    def j5(self, theta6, d6):
         matrix = [[0],
                   [0],
                   [0],
                   [0],
                   [0],
                   [0]]
-        matrix[0][0] = 0
-        matrix[1][0] = 0
+        matrix[0][0] = d6 * cosine(theta6)
+        matrix[1][0] = -d6 * sine(theta6)
         matrix[2][0] = 0
-        matrix[3][0] = 0
-        matrix[4][0] = 0
-        matrix[5][0] = 1
+        matrix[3][0] = sine(theta6)
+        matrix[4][0] = cosine(theta6)
+        matrix[5][0] = 0
         return matrix
 
     def check_j6(self):
-        self.j6(dict[1]['theta'], dict[2]['theta'], dict[3]['theta'], dict[4]['theta'], dict[5]['theta'])
+        self.j6()
 
-    def j6(self, theta1, theta2, theta3, theta4, theta5):
+    def j6(self):
         matrix = [[0],
                   [0],
                   [0],
