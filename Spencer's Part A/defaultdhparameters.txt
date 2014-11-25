@@ -1,0 +1,6 @@
+{"Joint 1" : {"theta" : 90, "alpha" : -90,"a" : 0,"d" : 0, "range min" : -160, "range max" : 160},
+ "Joint 2" : {"theta" : 0, "alpha" : 0,"a" : 0.4318,"d" : 0.14909, "range min" : -225, "range max" : 45},
+ "Joint 3" : {"theta" : 90, "alpha" : 90,"a" : -0.02032,"d" : 0, "range min" : -45, "range max" : 225},
+ "Joint 4" : {"theta" : 0, "alpha" : -90,"a" : 0,"d" : 0.43307, "range min" : -110, "range max" : 170},
+ "Joint 5" : {"theta" : 0, "alpha" : 90,"a" : 0,"d" : 0, "range min" : -100, "range max" : 100},
+ "Joint 6" : {"theta" : 0, "alpha" : 0,"a" : 0,"d" : 0.05625, "range min" : -266, "range max" : 266}}
