@@ -19,16 +19,18 @@ def left_hand_matrix_template(x,y,z):
     """
     [ 90.  20.  25.   0.  45.   0.]
 
-    [[  0.00000000e+00  -1.00000000e+00   2.22044605e-16  -1.50100000e-01]
-    [  8.88178420e-16   2.22044605e-16   1.00000000e+00   6.97652953e-01]
-    [ -1.00000000e+00   0.00000000e+00   8.88178420e-16   1.54391792e+00]
-    [  0.00000000e+00   0.00000000e+00   0.00000000e+00   1.00000000e+00]]
-
+        [[ -2.22044605e-16  -1.00000000e+00   0.00000000e+00  -1.50100000e-01]
+        [  1.73648178e-01   0.00000000e+00   9.84807753e-01   6.57027156e-01]
+        [ -9.84807753e-01   2.22044605e-16   1.73648178e-01   1.66243707e+00]
+        [  0.00000000e+00   0.00000000e+00   0.00000000e+00   1.00000000e+00]]
     """
-    matrix=[[  0.00000000e+00,  -1.00000000e+00,   2.22044605e-16,  x],
-            [  8.88178420e-16,   2.22044605e-16,   1.00000000e+00,   y],
-            [ -1.00000000e+00,   0.00000000e+00,   8.88178420e-16,   z],
-            [  0.00000000e+00,   0.00000000e+00,   0.00000000e+00,   1.00000000e+00]]
+    matrix=[
+        [  0.00000000e+00,  -1.00000000e+00,   1.66533454e-16,  x],
+        [  1.66533454e-16,   1.11022302e-16,   1.00000000e+00,   y],
+        [ -1.00000000e+00,   0.00000000e+00,   1.11022302e-16,   1.54391792e+00],
+        [  0.00000000e+00,   0.00000000e+00,   0.00000000e+00,   1.00000000e+00]
+            ]
+
 
     return matrix
 
@@ -55,6 +57,9 @@ def look_for_matrix():
     env.SetViewer('qtcoin') # attach viewer (optional)
     env.Load('pumaarm.dae') # load a simple scene
     robot = env.GetRobots()[0]
+    #Add axes to each coordinate frame of the robot
+
+
 
     helper= helper_functions.helper()
 
@@ -66,6 +71,19 @@ def look_for_matrix():
         if joint <= 6:
             print "Moving"
             robot.SetDOFValues([numpy.radians(angle)],[joint])
+            T0 = robot.GetLinks()[0].GetTransform() # get the transform of link 1
+            T1 = robot.GetLinks()[1].GetTransform() # get the transform of link 2
+            T2 = robot.GetLinks()[2].GetTransform() # get the transform of link 3
+            T3 = robot.GetLinks()[3].GetTransform() # get the transform of link 4
+            T4 = robot.GetLinks()[4].GetTransform() # get the transform of link 5
+            T5 = robot.GetLinks()[5].GetTransform() # get the transform of link 6
+            handles=[]
+            handles.append(misc.DrawAxes(env,T0,0.3,3))
+            handles.append(misc.DrawAxes(env,T1,0.3,3))
+            handles.append(misc.DrawAxes(env,T2,0.3,3))
+            handles.append(misc.DrawAxes(env,T3,0.3,3))
+            handles.append(misc.DrawAxes(env,T4,0.3,3))
+            handles.append(misc.DrawAxes(env,T5,0.3,3))
         elif joint==10:
             print numpy.degrees(robot.GetDOFValues())
             print robot.GetLinks()[6].GetTransform()
@@ -80,7 +98,7 @@ def look_for_matrix():
 
 class linear_movement(object):
 
-    def __init__(self,a=1,b=2):
+    def __init__(self,a=1,b=1):
         self.a=a
         self.b=b
         self.speed=0.01
@@ -92,6 +110,8 @@ class linear_movement(object):
         self.env.Load('pumaarm.dae') # load a simple scene
         self.robot = self.env.GetRobots()[0]
 
+
+
         self.cros= cross_product_mth.cross_product_method()
 
 
@@ -99,22 +119,23 @@ class linear_movement(object):
 
         inita=[ 90,  20,  25,   0,  45,   0]
 
-        mat=left_hand_matrix_template(-1.50100000e-01,6.97652953e-01,self.z)
-
-        inita=project.solve_matrix(numpy.matrix(mat),inita[0],inita[1],inita[2],inita[3],inita[4],inita[5])
-
-        self.robot.SetDOFValues(inita,[0,1,2,3,4,5])
-
-        xcopy=self.initx+self.speed
+        xcopy=self.initx
 
         for i in range(0,amount):
 
             y=self.a*xcopy +self.b
 
-            mat=left_hand_matrix_template(xcopy,y,self.z)
+            auxmat=numpy.matrix(left_hand_matrix_template(xcopy,y,None))
 
-            inita=project.solve_matrix(numpy.matrix(mat),inita[0],inita[1],inita[2],inita[3],inita[4],inita[5])
+            inita=project.solve_matrix(auxmat,inita[0],inita[1],inita[2],inita[3],inita[4],inita[5])
 
+
+            print ""
+
+            print (inita)
+
+
+            """
             jac=self.cros.solve_angles(inita)
 
             matjacs= self.cros.map_of_jacs_into_matrix(jac)
@@ -124,14 +145,14 @@ class linear_movement(object):
             self.robot.SetDOFValues(inita,[0,1,2,3,4,5])
 
             time.sleep(0.1)
-
+            """
             xcopy += self.speed
 
 
 
 def main():
-    lin=linear_movement()
-    lin.move_in_line(1)
+    lin=linear_movement((0.254098361),0.735140164)
+    lin.move_in_line(2)
     #look_for_matrix()
 
 
