@@ -18,6 +18,8 @@ class cross_product_method(object):
         self.angles=None
         self.helper= helper_functions.helper()
         self.checker=check_functions.check_cpm()
+        helper_functions.load_DH_table()
+        check_functions.load_DH_table()
 
 
     def change_all_into_radians(self):
@@ -32,8 +34,6 @@ class cross_product_method(object):
     def solve_angles(self,angles):
         self.angles=angles
 
-
-        self.change_all_into_radians()
 
         self.checker.set_angles_to_check(self.angles)
 
@@ -256,8 +256,8 @@ class cross_product_method(object):
 
 def main():
 
-    helper_functions.load_DH_table()
-    check_functions.load_DH_table()
+
+
     inverser=inverse_jacobian.inverse_method()
     cros= cross_product_method()
 

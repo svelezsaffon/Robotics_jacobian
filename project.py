@@ -153,10 +153,12 @@ def load(filename):
         global params
         params = json.load(f)
         f.close()
+
+        """
         #Load the robot from the local files (since ours differs from the default PUMA)
         global robot
-	robot = env.ReadRobotXMLFile('robots/puma569.robot.xml')
-	env.Add(robot)
+	    #robot = env.ReadRobotXMLFile('robots/puma569.robot.xml')
+	    #env.Add(robot)
 
         #Set the DOF Limits for the robot based on what is read in from the DH parameters
         global gripper_min
@@ -164,7 +166,7 @@ def load(filename):
         robot.SetDOFLimits(radians([params["Joint 1"]["range min"], params["Joint 2"]["range min"], params["Joint 3"]["range min"], params["Joint 4"]["range min"], params["Joint 5"]["range min"], params["Joint 6"]["range min"], gripper_min]), radians([params["Joint 1"]["range max"], params["Joint 2"]["range max"], params["Joint 3"]["range max"], params["Joint 4"]["range max"], params["Joint 5"]["range max"], params["Joint 6"]["range max"], gripper_max]))
 
         #Add axes to each coordinate frame of the robot
-	T0 = robot.GetLinks()[0].GetTransform() # get the transform of link 1
+	    T0 = robot.GetLinks()[0].GetTransform() # get the transform of link 1
     	T1 = robot.GetLinks()[1].GetTransform() # get the transform of link 2
     	T2 = robot.GetLinks()[2].GetTransform() # get the transform of link 3
     	T3 = robot.GetLinks()[3].GetTransform() # get the transform of link 4
@@ -180,6 +182,8 @@ def load(filename):
         
         #Set the DOF Values for the robot based on what is read in from the DH parameters
         robot.SetDOFValues(radians([params["Joint 1"]["theta"], params["Joint 2"]["theta"], params["Joint 3"]["theta"], params["Joint 4"]["theta"], params["Joint 5"]["theta"], params["Joint 6"]["theta"], 0]), [0,1,2,3,4,5,6])
+
+        """
 
 def calculateIndicators(T6, theta2, theta3, theta4):
         global params        
@@ -317,8 +321,11 @@ def forwardKinematics():
             time.sleep(0.01)
         f.close()
 
-def geometricApproach():
-        printMatricies(False)
+def geometricApproach(T6,theta1,theta2,theta3,theta4,theta5,theta6):
+
+        res_angles=[0,0,0,0,0,0]
+
+        """
         theta1 = input("theta1 = ")
         theta2 = input("theta2 = ")
         theta3 = input("theta3 = ")
@@ -329,13 +336,33 @@ def geometricApproach():
         robot.SetDOFValues(thetas,[0,1,2,3,4,5])
         transformationMatricies = calculateT6(thetas)
         T6 = transformationMatricies[5]
-        calculateIndicators(T6, radians(theta2), radians(theta3), radians(theta4))
         print transformationMatricies[5]
         T3 = transformationMatricies[2]
         T4 = transformationMatricies[3]
+        """
+        params["Joint 1"]["theta"]=theta1
+        params["Joint 2"]["theta"]=theta2
+        params["Joint 3"]["theta"]=theta3
+        params["Joint 4"]["theta"]=theta4
+        params["Joint 5"]["theta"]=theta5
+        params["Joint 6"]["theta"]=theta6
+
+        printMatricies(False)
+
+        thetas = radians([theta1, theta2, theta3, theta4, theta5, theta6])
+        #transformationMatricies = calculateT6(thetas)
+        ##T6 = transformationMatricies[5]
+
+        calculateIndicators(T6, radians(theta2), radians(theta3), radians(theta4))
+
+
         global params
         global ARM
         global ELBOW
+
+
+
+
         px = T4.item(3)
         py = T4.item(7)
         pz = T4.item(11)
@@ -345,7 +372,8 @@ def geometricApproach():
         a3 = params["Joint 3"]["a"]
         #Solve for theta1
         theta1 = arctan2(-ARM * py * sqrt(power(px,2) + power(py,2) - power(d2,2)) - px * d2, -ARM * px * sqrt(power(px,2) + power(py,2) - power(d2,2)) + py * d2)
-        print "theta1 = " , degrees(theta1)
+        res_angles[0]= theta1
+
         #Solve for theta2
         R = sqrt(power(px,2) + power(py,2) + power(pz,2) - power(d2,2))
         r = sqrt(power(px,2) + power(py,2) - power(d2,2))
@@ -356,7 +384,9 @@ def geometricApproach():
         sintheta2 = sinalpha * cosbeta + (ARM * ELBOW) * cosalpha * sinbeta
         costheta2 = cosalpha * cosbeta - (ARM * ELBOW) * sinalpha * sinbeta
         theta2 = arctan2(sintheta2, costheta2)
-        print "theta2 = " , degrees(theta2)
+
+        res_angles[1]= theta2
+
         #Solve for theta3
         cosphi = (power(a2,2) + (power(d4,2) + power(a3,2)) - power(R,2))/(2*a2*sqrt(power(d4,2) + power(a3,2)))
         sinphi = ARM * ELBOW * sqrt(1 - power(cosphi, 2))
@@ -365,7 +395,9 @@ def geometricApproach():
         sintheta3 = sinphi*cosbeta2 - cosphi*sinbeta2
         costheta3 = cosphi*cosbeta2 + sinphi*sinbeta2
         theta3 = arctan2(sintheta3, costheta3)
-        print "theta3 = ", degrees(theta3)
+
+        res_angles[2]= theta3
+
         #Solve for theta4
         global WRIST
         global M
@@ -379,13 +411,16 @@ def geometricApproach():
         sz = T3.item(9)
         az = T3.item(10)
         theta4 = arctan2(M * (cos(theta1) * ay - sin(theta1) * ax), M * (cos(theta1) * cos(theta2 + theta3) * ax + sin(theta1) * sin(theta2 + theta3) * ay - sin(theta2 + theta3) * az))
-        print "theta4 = " , degrees(theta4)
+        res_angles[3]= (theta4)
         #Solve for theta5
         theta5 = arctan2((cos(theta1) * cos(theta2 + theta3) * cos(theta4) - sin(theta1) * sin(theta4)) * ax + (sin(theta1) * cos(theta2 + theta3) * cos(theta4) + cos(theta1) * sin(theta4)) * ay - sin(theta2 + theta3) * cos(theta4) * az, cos(theta1) * sin(theta2 + theta3) * ax + sin(theta1) * sin(theta2 + theta3) * ay + cos(theta2 + theta3) * az)
-        print "theta5 = " , degrees(theta5)
+        res_angles[4]= (theta5)
         #Solve for theta6
         theta6 = arctan2((-sin(theta1) * cos(theta4) - cos(theta1) * cos(theta2 + theta3) * sin(theta4)) * nx + (cos(theta1) * cos(theta4) - sin(theta1) * cos(theta2 + theta3) * sin(theta4)) * ny + (sin(theta2 + theta3) * sin(theta4)) * nz, (-sin(theta1) * cos(theta4) - cos(theta1) * cos(theta2 + theta3) * sin(theta4)) * sx + (cos(theta1) * cos(theta4) - sin(theta1) * cos(theta2 + theta3) * sin(theta4)) * sy + (sin(theta2 + theta3) * sin(theta4)) * sz)
-        print "theta6 = " , degrees(theta6)
+        res_angles[5]= (theta6)
+
+
+        return res_angles
 
 def circleSubstitution(T6):
         global params
@@ -653,7 +688,14 @@ def main():
         finally:
 	        env.Destroy()
 
-main()
+
+def solve_matrix(T6A,theta1,theta2,theta3,theta4,theta5,theta6):
+    filename = 'defaultdhparameters.txt'
+    load(filename)
+    return geometricApproach(T6A,theta1,theta2,theta3,theta4,theta5,theta6)
+
+
+
 #body = env.ReadKinBodyXMLFile(filename='data/puma_tabletop.env.xml')
 #env.AddKinBody(body)
 #body.SetTransform([1,0,0,0,0,0,0])
