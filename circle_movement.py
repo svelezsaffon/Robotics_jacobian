@@ -1,0 +1,166 @@
+__author__ = 'Santiago & Spencer'
+
+
+
+import numpy
+import helper_functions
+import project
+import cross_product_mth
+
+import numpy.linalg as lineal
+import openravepy
+import sys
+from openravepy import *
+import time
+
+
+
+def left_hand_matrix_template(x,y,z):
+    """
+        [ 45.  10.  25.   0.  45.   0.]
+        [[  1.22787804e-01  -7.07106781e-01   6.96364240e-01   3.58451629e-01]
+        [  1.22787804e-01   7.07106781e-01   6.96364240e-01   5.70725085e-01]
+        [ -9.84807753e-01   1.66533454e-16   1.73648178e-01   1.66243707e+00]
+        [  0.00000000e+00   0.00000000e+00   0.00000000e+00   1.00000000e+00]]
+    """
+    matrix=[
+            [  1.22787805e-01,  -7.07106781e-01,   6.96364240e-01,   x],
+            [  1.22787804e-01,   7.07106781e-01,   6.96364240e-01,   y],
+            [ -9.84807753e-01,   1.66533454e-16,   1.73648178e-01,   z],
+            [  0.00000000e+00,   0.00000000e+00,   0.00000000e+00,   1.00000000e+00]
+            ]
+
+
+    return matrix
+
+
+def right_hand_matrix_template(x,y,z):
+    """
+        [-90.  20.  25.   0.  45.   0.]
+        [[  0.00000000e+00   1.00000000e+00   1.11022302e-16   1.50100000e-01]
+        [ -7.77156117e-16   0.00000000e+00  -1.00000000e+00  -6.97652953e-01]
+        [ -1.00000000e+00   1.11022302e-16   6.66133815e-16   1.54391792e+00]
+        [  0.00000000e+00   0.00000000e+00   0.00000000e+00   1.00000000e+00]]
+    """
+    matrix=[[  0.00000000e+00,   1.00000000e+00,   1.11022302e-16,   x]
+            [ -7.77156117e-16,   0.00000000e+00,  -1.00000000e+00,  -y]
+            [ -1.00000000e+00,   1.11022302e-16,   6.66133815e-16,   z]
+            [  0.00000000e+00,   0.00000000e+00,   0.00000000e+00,   1.00000000e+00]]
+
+
+def look_for_matrix():
+    print "Looking for matrix"
+
+    out=False
+    env=Environment()
+    env.SetViewer('qtcoin') # attach viewer (optional)
+    env.Load('pumaarm.dae') # load a simple scene
+    robot = env.GetRobots()[0]
+    #Add axes to each coordinate frame of the robot
+
+
+
+    helper= helper_functions.helper()
+
+    #robot.SetDOFValues([0,1,2,3,4,5],[numpy.radians(57),numpy.radians(0),numpy.radians(90),numpy.radians(0),numpy.radians(0),numpy.radians(0)])
+
+    while out is False:
+        joint=int(raw_input("Joint:"))
+        angle=float(raw_input("angle:"))
+        if joint <= 6:
+            print "Moving"
+            robot.SetDOFValues([numpy.radians(angle)],[joint])
+            T0 = robot.GetLinks()[0].GetTransform() # get the transform of link 1
+            T1 = robot.GetLinks()[1].GetTransform() # get the transform of link 2
+            T2 = robot.GetLinks()[2].GetTransform() # get the transform of link 3
+            T3 = robot.GetLinks()[3].GetTransform() # get the transform of link 4
+            T4 = robot.GetLinks()[4].GetTransform() # get the transform of link 5
+            T5 = robot.GetLinks()[5].GetTransform() # get the transform of link 6
+            handles=[]
+            handles.append(misc.DrawAxes(env,T0,0.3,3))
+            handles.append(misc.DrawAxes(env,T1,0.3,3))
+            handles.append(misc.DrawAxes(env,T2,0.3,3))
+            handles.append(misc.DrawAxes(env,T3,0.3,3))
+            handles.append(misc.DrawAxes(env,T4,0.3,3))
+            handles.append(misc.DrawAxes(env,T5,0.3,3))
+        elif joint==10:
+            print numpy.degrees(robot.GetDOFValues())
+            print robot.GetLinks()[6].GetTransform()
+        elif joint==11:
+            #mat=left_hand_matrix_template(-1.50100000e-01,6.97652953e-01,1.54391792e+00)
+            #robot.GetLinks()[6].SetTransform(mat)
+            print helper.create_0Ai_matrix(6,numpy.degrees(robot.GetDOFValues()))
+        else:
+            out=True
+
+
+
+class circular_movement(object):
+
+    def __init__(self):
+        self.speed=0.1
+        self.x=3.58451629e-01
+        self.r=0.254
+
+        self.env=Environment()
+        self.env.SetViewer('qtcoin') # attach viewer (optional)
+        self.env.Load('pumaarm.dae') # load a simple scene
+        self.robot = self.env.GetRobots()[0]
+
+        self.cros= cross_product_mth.cross_product_method()
+
+    def move_in_circle(self,amount=80):
+
+        angle=0.1
+
+        inita= [ 45,  10,  25,   0,  45,   0]
+
+        self.robot.SetDOFValues(numpy.radians(inita),[0,1,2,3,4,5])
+
+        amount=int(raw_input("Enter when ready"))
+
+
+        for i in range(0,amount):
+            y=self.r*numpy.cos(angle)+5.70725085e-01
+            z=self.r*numpy.sin(angle)+1.66243707e+00
+
+            pos_mtarix=(left_hand_matrix_template(self.x,y,z))
+
+            self.robot.GetLinks()[6].SetTransform(pos_mtarix)
+
+            time.sleep(0.2)
+
+            inita=project.solve_matrix(numpy.matrix(pos_mtarix),inita[0],inita[1],inita[2],inita[3],inita[4],inita[5])
+
+            print inita
+
+            #
+
+            """
+            jac=self.cros.solve_angles(inita)
+
+            matjacs= self.cros.map_of_jacs_into_matrix(jac)
+
+            inita=numpy.dot(matjacs,inita)
+
+            self.robot.SetDOFValues(numpy.radians(inita),[0,1,2,3,4,5])
+
+            time.sleep(0.1)
+            """
+
+            angle=angle+self.speed
+
+
+    def print_something(self):
+        print "something"
+
+def main():
+    lin=circular_movement()
+    lin.move_in_circle()
+    #look_for_matrix()
+
+
+
+
+if __name__ == '__main__':
+    main()
