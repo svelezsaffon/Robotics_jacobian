@@ -4,7 +4,7 @@ __author__ = 'Santiago & Spencer'
 
 import numpy
 import helper_functions
-import project
+import geometricIK
 import cross_product_mth
 
 import numpy.linalg as lineal
@@ -47,6 +47,7 @@ def right_hand_matrix_template(x,y,z):
             [ -1.00000000e+00,   1.11022302e-16,   6.66133815e-16,   z]
             [  0.00000000e+00,   0.00000000e+00,   0.00000000e+00,   1.00000000e+00]]
 
+    return matrix
 
 def look_for_matrix():
     print "Looking for matrix"
@@ -124,14 +125,15 @@ class circular_movement(object):
             y=self.r*numpy.cos(angle)+5.70725085e-01
             z=self.r*numpy.sin(angle)+1.66243707e+00
 
-            pos_mtarix=(left_hand_matrix_template(self.x,y,z))
+            pos_matrix=(left_hand_matrix_template(self.x,y,z))
 
-            self.robot.GetLinks()[6].SetTransform(pos_mtarix)
+            self.robot.GetLinks()[6].SetTransform(pos_matrix)
 
             time.sleep(0.2)
 
-            inita=project.solve_matrix(numpy.matrix(pos_mtarix),inita[0],inita[1],inita[2],inita[3],inita[4],inita[5])
-
+            #inita=project.solve_matrix(numpy.matrix(pos_matrix),inita[0],inita[1],inita[2],inita[3],inita[4],inita[5])
+            inita=geometricIK.callGeometricIK(numpy.matrix(pos_matrix))
+            self.robot.SetDOFValues([numpy.radians(inita[0])],[0])
             print inita
 
             #
