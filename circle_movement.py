@@ -127,13 +127,25 @@ class circular_movement(object):
 
             pos_matrix=(left_hand_matrix_template(self.x,y,z))
 
-            self.robot.GetLinks()[6].SetTransform(pos_matrix)
+            #self.robot.GetLinks()[6].SetTransform(pos_matrix)
 
             time.sleep(0.2)
 
             #inita=project.solve_matrix(numpy.matrix(pos_matrix),inita[0],inita[1],inita[2],inita[3],inita[4],inita[5])
             inita=geometricIK.callGeometricIK(numpy.matrix(pos_matrix))
-            self.robot.SetDOFValues([numpy.radians(inita[0])],[0])
+
+            """
+            inita=[]
+            inita.append(initab[0])
+            inita.append(initab[1])
+            inita.append(initab[2])
+            inita.append(initab[3])
+            inita.append(initab[4])
+            inita.append(initab[5])
+            """
+
+            self.robot.SetDOFValues(numpy.radians(inita),[0,1,2,3,4,5])
+
             print inita
 
             #
