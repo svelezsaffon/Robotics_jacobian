@@ -23,11 +23,12 @@ def left_hand_matrix_template(x,y,z):
         [ -9.84807753e-01   1.66533454e-16   1.73648178e-01   1.66243707e+00]
         [  0.00000000e+00   0.00000000e+00   0.00000000e+00   1.00000000e+00]]
     """
+        #Old matrix Above, New Matrix Below
     """
-[[ 0.1227878  -0.70710678  0.69636424  0.35914206]
- [ 0.1227878   0.70710678  0.69636424  0.56998716]
- [-0.98480775  0.          0.17364818  0.29142397]
- [ 0.          0.          0.          1.        ]]
+        [[ 0.1227878  -0.70710678  0.69636424  0.35914206]
+        [ 0.1227878   0.70710678  0.69636424  0.56998716]
+        [-0.98480775  0.          0.17364818  0.29142397]
+        [ 0.          0.          0.          1.        ]]
 
     """
     matrix=[
@@ -129,8 +130,8 @@ class circular_movement(object):
 
 
         for i in range(0,amount):
-            y=self.r*numpy.cos(angle)+5.70725085e-01
-            z=self.r*numpy.sin(angle)+1.66243707e+00
+            y=self.r*numpy.cos(angle)+0.56998716
+            z=self.r*numpy.sin(angle)+0.29142397
 
             pos_matrix=(left_hand_matrix_template(self.x,y,z))
 
