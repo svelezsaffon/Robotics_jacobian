@@ -6,6 +6,7 @@ import numpy
 import helper_functions
 import project
 import cross_product_mth
+import geometricIK
 
 import numpy.linalg as lineal
 import openravepy
@@ -23,13 +24,28 @@ def left_hand_matrix_template(x,y,z):
         [  1.73648178e-01   0.00000000e+00   9.84807753e-01   6.57027156e-01]
         [ -9.84807753e-01   2.22044605e-16   1.73648178e-01   1.66243707e+00]
         [  0.00000000e+00   0.00000000e+00   0.00000000e+00   1.00000000e+00]]
-    """
+
     matrix=[
         [  0.00000000e+00,  -1.00000000e+00,   1.66533454e-16,  x],
         [  1.66533454e-16,   1.11022302e-16,   1.00000000e+00,   y],
         [ -1.00000000e+00,   0.00000000e+00,   1.11022302e-16,   1.54391792e+00],
         [  0.00000000e+00,   0.00000000e+00,   0.00000000e+00,   1.00000000e+00]
             ]
+
+
+        [[ 0.1227878  -0.70710678  0.69636424  0.35914206]
+        [ 0.1227878   0.70710678  0.69636424  0.56998716]
+        [-0.98480775  0.          0.17364818  0.29142397]
+        [ 0.          0.          0.          1.        ]]
+
+    """
+    matrix=[
+            [  0.17364818,  0.        ,   0.98480775,   x],
+            [  0.        ,  1.        ,   0.        ,   y],
+            [ -0.98480775,  0.        ,   0.17364818,   0.29142397],
+            [  0.        ,  0.        ,   0.        ,   1.]
+            ]
+
 
 
     return matrix
@@ -115,24 +131,35 @@ class linear_movement(object):
         self.cros= cross_product_mth.cross_product_method()
 
 
-    def move_in_line(self,amount=20):
+    def move_in_line(self,amount=88):
 
-        inita=[ 90,  20,  25,   0,  45,   0]
+        inita= [ 20,  10,  25,   0,  45,   0]
+
+        self.robot.SetDOFValues(numpy.radians(inita),[0,1,2,3,4,5])
 
         xcopy=self.initx
+
+        handles = []
 
         for i in range(0,amount):
 
             y=self.a*xcopy +self.b
 
-            auxmat=numpy.matrix(left_hand_matrix_template(xcopy,y,None))
+            pos_matrix=numpy.matrix(left_hand_matrix_template(xcopy,y,None))
 
-            inita=project.solve_matrix(auxmat,inita[0],inita[1],inita[2],inita[3],inita[4],inita[5])
+            inita=geometricIK.callGeometricIK(numpy.matrix(pos_matrix))
 
 
-            print ""
+            self.robot.SetDOFValues(numpy.radians(inita),[0,1,2,3,4,5])
 
-            print (inita)
+
+            T6 = self.robot.GetLinks()[6].GetTransform() # get the transform of link 6
+            T6[0][3] += 0.09
+            handles.append(misc.DrawAxes(self.env,T6,0.01,3))
+
+
+
+            time.sleep(0.2)
 
 
             """
@@ -148,11 +175,12 @@ class linear_movement(object):
             """
             xcopy += self.speed
 
+        pause=raw_input("Enter To exit")
 
 
 def main():
-    lin=linear_movement((0.254098361),0.735140164)
-    lin.move_in_line(2)
+    lin=linear_movement(0.1,0.3)
+    lin.move_in_line()
     #look_for_matrix()
 
 
