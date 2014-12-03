@@ -127,7 +127,7 @@ class circular_movement(object):
         self.robot.SetDOFValues(numpy.radians(inita),[0,1,2,3,4,5])
 
         #amount=int(raw_input("Enter when ready"))
-
+        handles = []
 
         for i in range(0,amount):
             y=self.r*numpy.cos(angle)+0.56998716
@@ -153,8 +153,9 @@ class circular_movement(object):
             """
 
             self.robot.SetDOFValues(numpy.radians(inita),[0,1,2,3,4,5])
-
-            print inita
+            T5 = self.robot.GetLinks()[5].GetTransform() # get the transform of link 6
+            handles.append(misc.DrawAxes(self.env,T5,0.3,3))
+            #print inita
 
             #
 
@@ -171,7 +172,7 @@ class circular_movement(object):
             """
 
             angle=angle+self.speed
-
+        pause=raw_input("Enter when ready")
 
     def print_something(self):
         print "something"
@@ -180,7 +181,6 @@ def main():
     lin=circular_movement()
     lin.move_in_circle()
     #look_for_matrix()
-
 
 
 
