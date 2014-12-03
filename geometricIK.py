@@ -75,7 +75,7 @@ def geometricApproach(T3, T4, T6, ARM, ELBOW, WRIST, M):
         R = sqrt(power(px,2) + power(py,2) + power(pz,2) - power(d2,2))
         r = sqrt(power(px,2) + power(py,2) - power(d2,2))
 
-        """
+        #"""
         sinalpha = -pz/R
         cosalpha = -(ARM * r)/R
 
@@ -89,15 +89,15 @@ def geometricApproach(T3, T4, T6, ARM, ELBOW, WRIST, M):
         """
 
         upper=py*cos(theta1)-px*sin(theta1)
-        lower=py*cos(theta1)+px*cos(theta1)-a1
+        lower=py*sin(theta1)+px*cos(theta1)-a1
 
         theta2=arctan2(upper,lower)
-
+        """
         res_angles[1]= degrees(theta2)
 
         #Solve for theta3
 
-        """
+        #"""
         cosphi = (power(a2,2) + (power(d4,2) + power(a3,2)) - power(R,2))/(2*a2*sqrt(power(d4,2) + power(a3,2)))
         sinphi = ARM * ELBOW * sqrt(1 - power(cosphi, 2))
         sinbeta2 = d4/sqrt(power(d4,2) + power(a3,2))
@@ -113,9 +113,9 @@ def geometricApproach(T3, T4, T6, ARM, ELBOW, WRIST, M):
         upper=ny*cos(theta1+theta2)-nx*sin(theta1+theta2)
         lower=ny*sin(theta1+theta2)+nx*cos(theta1+theta2)
 
-        theta3=arctan2(-upper,lower)
+        theta3=2*arctan2(-upper,lower)
 
-
+        """
         res_angles[2]= degrees(theta3)
 
         #Solve for theta4

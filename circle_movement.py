@@ -23,11 +23,18 @@ def left_hand_matrix_template(x,y,z):
         [ -9.84807753e-01   1.66533454e-16   1.73648178e-01   1.66243707e+00]
         [  0.00000000e+00   0.00000000e+00   0.00000000e+00   1.00000000e+00]]
     """
+    """
+[[ 0.1227878  -0.70710678  0.69636424  0.35914206]
+ [ 0.1227878   0.70710678  0.69636424  0.56998716]
+ [-0.98480775  0.          0.17364818  0.29142397]
+ [ 0.          0.          0.          1.        ]]
+
+    """
     matrix=[
-            [  1.22787805e-01,  -7.07106781e-01,   6.96364240e-01,   x],
-            [  1.22787804e-01,   7.07106781e-01,   6.96364240e-01,   y],
-            [ -9.84807753e-01,   1.66533454e-16,   1.73648178e-01,   z],
-            [  0.00000000e+00,   0.00000000e+00,   0.00000000e+00,   1.00000000e+00]
+            [  0.1227878,  -0.70710678,   0.69636424,   x],
+            [  0.1227878,   0.70710678,   0.69636424,   y],
+            [ -0.98480775,  0.        ,   0.17364818,   z],
+            [  0.        ,  0.        ,   0.        ,   1.]
             ]
 
 
@@ -118,7 +125,7 @@ class circular_movement(object):
 
         self.robot.SetDOFValues(numpy.radians(inita),[0,1,2,3,4,5])
 
-        amount=int(raw_input("Enter when ready"))
+        #amount=int(raw_input("Enter when ready"))
 
 
         for i in range(0,amount):
@@ -133,7 +140,7 @@ class circular_movement(object):
 
             #inita=project.solve_matrix(numpy.matrix(pos_matrix),inita[0],inita[1],inita[2],inita[3],inita[4],inita[5])
             inita=geometricIK.callGeometricIK(numpy.matrix(pos_matrix))
-
+            print inita
             """
             inita=[]
             inita.append(initab[0])
