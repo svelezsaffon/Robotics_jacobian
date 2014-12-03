@@ -109,7 +109,7 @@ class circular_movement(object):
     def __init__(self):
         self.speed=0.1
         self.x=3.58451629e-01
-        self.r=0.254
+        self.r=0.15
 
         self.env=Environment()
         self.env.SetViewer('qtcoin') # attach viewer (optional)
@@ -141,7 +141,7 @@ class circular_movement(object):
 
             #inita=project.solve_matrix(numpy.matrix(pos_matrix),inita[0],inita[1],inita[2],inita[3],inita[4],inita[5])
             inita=geometricIK.callGeometricIK(numpy.matrix(pos_matrix))
-            print inita
+
             """
             inita=[]
             inita.append(initab[0])
