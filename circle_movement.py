@@ -31,9 +31,21 @@ def left_hand_matrix_template(x,y,z):
         [ 0.          0.          0.          1.        ]]
 
     """
+    #matrix=[
+    #        [  0.1227878,  -0.70710678,   0.69636424,   x],
+    #        [  0.1227878,   0.70710678,   0.69636424,   y],
+    #        [ -0.98480775,  0.        ,   0.17364818,   z],
+    #        [  0.        ,  0.        ,   0.        ,   1.]
+    #        ]
+    """
+        [[ 0.17364818  0.          0.98480775  0.65699357]
+         [ 0.          1.          0.          0.14909   ]
+         [-0.98480775  0.          0.17364818  0.29142397]
+         [ 0.          0.          0.          1.        ]]
+    """
     matrix=[
-            [  0.1227878,  -0.70710678,   0.69636424,   x],
-            [  0.1227878,   0.70710678,   0.69636424,   y],
+            [  0.17364818,  0.        ,   0.98480775,   x],
+            [  0.        ,  1.        ,   0.        ,   y],
             [ -0.98480775,  0.        ,   0.17364818,   z],
             [  0.        ,  0.        ,   0.        ,   1.]
             ]
@@ -108,7 +120,7 @@ class circular_movement(object):
 
     def __init__(self):
         self.speed=0.1
-        self.x=3.58451629e-01
+        self.x=0.65699357
         self.r=0.15
 
         self.env=Environment()
@@ -130,7 +142,7 @@ class circular_movement(object):
         handles = []
 
         for i in range(0,amount):
-            y=self.r*numpy.cos(angle)+0.56998716
+            y=self.r*numpy.cos(angle)+0.14909
             z=self.r*numpy.sin(angle)+0.29142397
 
             pos_matrix=(left_hand_matrix_template(self.x,y,z))
@@ -153,8 +165,9 @@ class circular_movement(object):
             """
 
             self.robot.SetDOFValues(numpy.radians(inita),[0,1,2,3,4,5])
-            T5 = self.robot.GetLinks()[5].GetTransform() # get the transform of link 6
-            handles.append(misc.DrawAxes(self.env,T5,0.3,3))
+            T6 = self.robot.GetLinks()[6].GetTransform() # get the transform of link 6
+            T6[0][3] += 0.09
+            handles.append(misc.DrawAxes(self.env,T6,0.01,3))
             #print inita
 
             #

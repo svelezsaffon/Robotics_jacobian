@@ -31,7 +31,7 @@ def callGeometricIK(T6):
         #Indicators defined based on positioning of Circle or Line being drawn
         ARM = -1 # Left Arm
         ELBOW = -1 # Below arm
-        WRIST = -1 # Wrist Up
+        WRIST = 1 # Wrist Up
         FLIP = -1 # Do Not Flip Wrist Orientation
         M = 1 #?
         #Temporarily tries T6 as all 3 matricies, need to pass in appropriate T3 and T4
