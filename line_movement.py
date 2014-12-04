@@ -7,6 +7,7 @@ import helper_functions
 import project
 import cross_product_mth
 import geometricIK
+import inverse_jacobian
 
 import numpy.linalg as lineal
 import openravepy
@@ -141,6 +142,9 @@ class linear_movement(object):
 
         handles = []
 
+
+        inverser=inverse_jacobian.inverse_method()
+
         for i in range(0,amount):
 
             y=self.a*xcopy +self.b
@@ -150,29 +154,57 @@ class linear_movement(object):
             inita=geometricIK.callGeometricIK(numpy.matrix(pos_matrix))
 
 
-            self.robot.SetDOFValues(numpy.radians(inita),[0,1,2,3,4,5])
+            #self.robot.SetDOFValues(numpy.radians(inita),[0,1,2,3,4,5])
+            #T6 = self.robot.GetLinks()[6].GetTransform() # get the transform of link 6
+            #T6[0][3] += 0.09
+            #handles.append(misc.DrawAxes(self.env,T6,0.01,3))
 
 
+
+            jac=self.cros.solve_angles(inita)
+
+            matjacs= self.cros.map_of_jacs_into_matrix(jac)
+
+            moore= inverser.moore_penrose_equation(matjacs)
+
+
+            x=[
+                [xcopy],
+                [y],
+                [0.29142397],
+                [0.7],
+                [1],
+                [0.5]
+            ]
+
+
+            vel=numpy.dot(moore,x)
+
+            new_angles=[0,0,0,0,0,0]
+
+            for i in range(0,6):
+                new_angles[i]=inita[i]+(vel[i][0]*self.speed)
+
+            #print inita
+            #print "----------"
+            #print new_angles
+
+
+            self.robot.SetDOFValues(numpy.radians(new_angles),[0,1,2,3,4,5])
+
+
+
+            """Paint the line """
             T6 = self.robot.GetLinks()[6].GetTransform() # get the transform of link 6
             T6[0][3] += 0.09
             handles.append(misc.DrawAxes(self.env,T6,0.01,3))
 
 
 
-            time.sleep(0.2)
-
-
-            """
-            jac=self.cros.solve_angles(inita)
-
-            matjacs= self.cros.map_of_jacs_into_matrix(jac)
-
-            inita=numpy.dot(matjacs,inita)
-
-            self.robot.SetDOFValues(inita,[0,1,2,3,4,5])
-
             time.sleep(0.1)
-            """
+
+
+
             xcopy += self.speed
 
         pause=raw_input("Enter To exit")
