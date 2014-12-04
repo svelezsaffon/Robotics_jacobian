@@ -131,7 +131,7 @@ def main():
 
                         speed=100
 
-                        while speed>0.4:
+                        while speed>0.5:
                             speed=float(raw_input("Enter speed in range(0,0.5): "))
 
                         lin.speed=speed
@@ -155,7 +155,7 @@ def main():
 
                         speed=100
 
-                        while speed>0.4:
+                        while speed>0.5:
                             speed=float(raw_input("Enter speed in range(0,0.5): "))
 
                         lin.speed=speed

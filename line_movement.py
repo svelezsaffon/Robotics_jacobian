@@ -141,6 +141,9 @@ class linear_movement(object):
 
         inverser=inverse_jacobian.inverse_method()
 
+
+        amount=int((0.01*80)/self.speed)
+
         for i in range(0,amount):
 
             y=self.a*xcopy +self.b
@@ -203,6 +206,8 @@ class linear_movement(object):
         handles = []
 
         raw_input("Enter to start")
+
+        amount=int((0.01*80)/self.speed)
 
         for i in range(0,amount):
 
