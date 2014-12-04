@@ -212,9 +212,9 @@ class circular_movement(object):
                 [self.x],
                 [y],
                 [z],
-                [0.7],
-                [1],
-                [0.5]
+                [0],
+                [0],
+                [0]
             ]
             vel=numpy.dot(moore,x)
 
@@ -254,10 +254,13 @@ class circular_movement(object):
     def print_something(self):
         print "something"
 
+    def quit(self):
+        self.env.Destroy()
+
 def main():
     lin=circular_movement()
     lin.IK_move_in_circle()
-    lin.Jac_move_in_circle()
+    #lin.Jac_move_in_circle()
     #look_for_matrix()
 
 
