@@ -190,7 +190,7 @@ class circular_movement(object):
             """
 
             angle=angle+self.speed
-        pause=raw_input("Enter when ready")
+        pause=raw_input("Enter to exit")
 
     def Jac_move_in_circle(self,amount=80):
         
@@ -259,7 +259,7 @@ class circular_movement(object):
             """
 
             angle=angle+self.speed
-        pause=raw_input("Enter when ready")
+        pause=raw_input("Enter to exit")
 
     def print_something(self):
         print "something"
