@@ -192,7 +192,7 @@ class linear_movement(object):
 
             xcopy += self.speed
 
-        pause=raw_input("Enter To exit")
+        raw_input("Enter To exit")
 
 
     def IK_move_in_line(self,amount=80):
@@ -204,8 +204,6 @@ class linear_movement(object):
         xcopy=self.initx
 
         handles = []
-
-        raw_input("Enter to start")
 
         amount=int((0.01*80)/self.speed)
 
