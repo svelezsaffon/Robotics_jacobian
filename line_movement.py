@@ -132,7 +132,7 @@ class linear_movement(object):
         self.cros= cross_product_mth.cross_product_method()
 
 
-    def move_in_line(self,amount=88):
+    def Jac_move_in_line(self,amount=88):
 
         inita= [ 20,  10,  25,   0,  45,   0]
 
@@ -172,9 +172,9 @@ class linear_movement(object):
                 [xcopy],
                 [y],
                 [0.29142397],
-                [0.7],
-                [1],
-                [0.5]
+                [0.0],
+                [0.0],
+                [0.0]
             ]
 
 
@@ -192,8 +192,6 @@ class linear_movement(object):
 
             self.robot.SetDOFValues(numpy.radians(new_angles),[0,1,2,3,4,5])
 
-
-
             """Paint the line """
             T6 = self.robot.GetLinks()[6].GetTransform() # get the transform of link 6
             T6[0][3] += 0.09
@@ -210,9 +208,43 @@ class linear_movement(object):
         pause=raw_input("Enter To exit")
 
 
+    def IK_move_in_circle(self,amount=88):
+
+        inita= [ 0,  10,  25,   0,  45,   0]
+
+        self.robot.SetDOFValues(numpy.radians(inita),[0,1,2,3,4,5])
+
+        xcopy=self.initx
+
+        handles = []
+
+        raw_input("Enter to start")
+
+        for i in range(0,amount):
+
+            y=self.a*xcopy +self.b
+
+            pos_matrix=numpy.matrix(left_hand_matrix_template(xcopy,y,None))
+
+            inita=geometricIK.callGeometricIK(numpy.matrix(pos_matrix))
+
+
+            self.robot.SetDOFValues(numpy.radians(inita),[0,1,2,3,4,5])
+            T6 = self.robot.GetLinks()[6].GetTransform() # get the transform of link 6
+            T6[0][3] += 0.09
+            handles.append(misc.DrawAxes(self.env,T6,0.01,3))
+
+
+            time.sleep(0.1)
+
+            xcopy += self.speed
+
+        raw_input("Enter To exit")
+
 def main():
     lin=linear_movement(0.1,0.3)
-    lin.move_in_line()
+    lin.Jac_move_in_line()
+    #lin.IK_move_in_circle()
     #look_for_matrix()
 
 
