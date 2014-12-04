@@ -213,10 +213,7 @@ def main():
 
     matjacs= dtrm.map_of_jacs_into_matrix(jac)
 
-
-    moore= inverser.moore_penrose_equation(matjacs)
-
-    print inverser.property_4(matjacs,moore)
+    print matjacs
 
 
 
