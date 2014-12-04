@@ -6,6 +6,7 @@ import numpy
 import helper_functions
 import geometricIK
 import cross_product_mth
+import inverse_jacobian
 
 import numpy.linalg as lineal
 import openravepy
@@ -130,11 +131,11 @@ class circular_movement(object):
 
         self.cros= cross_product_mth.cross_product_method()
 
-    def move_in_circle(self,amount=80):
+    def IK_move_in_circle(self,amount=80):
 
         angle=0.1
 
-        inita= [ 45,  10,  25,   0,  45,   0]
+        inita= [ 0,  10,  25,   0,  45,   0]
 
         self.robot.SetDOFValues(numpy.radians(inita),[0,1,2,3,4,5])
 
@@ -147,13 +148,7 @@ class circular_movement(object):
 
             pos_matrix=(left_hand_matrix_template(self.x,y,z))
 
-            #self.robot.GetLinks()[6].SetTransform(pos_matrix)
-
-            time.sleep(0.2)
-
-            #inita=project.solve_matrix(numpy.matrix(pos_matrix),inita[0],inita[1],inita[2],inita[3],inita[4],inita[5])
             inita=geometricIK.callGeometricIK(numpy.matrix(pos_matrix))
-
             """
             inita=[]
             inita.append(initab[0])
@@ -169,7 +164,76 @@ class circular_movement(object):
             T6[0][3] += 0.09
             handles.append(misc.DrawAxes(self.env,T6,0.01,3))
             #print inita
+            time.sleep(0.2)
+            #
 
+            """
+            jac=self.cros.solve_angles(inita)
+
+            matjacs= self.cros.map_of_jacs_into_matrix(jac)
+
+            inita=numpy.dot(matjacs,inita)
+
+            self.robot.SetDOFValues(numpy.radians(inita),[0,1,2,3,4,5])
+
+            time.sleep(0.1)
+            """
+
+            angle=angle+self.speed
+        pause=raw_input("Enter when ready")
+
+    def Jac_move_in_circle(self,amount=80):
+        
+        angle=0.1
+
+        inita= [ 0,  10,  25,   0,  45,   0]
+
+        self.robot.SetDOFValues(numpy.radians(inita),[0,1,2,3,4,5])
+
+        #amount=int(raw_input("Enter when ready"))
+        handles = []
+        inverser=inverse_jacobian.inverse_method()
+
+        for i in range(0,amount):
+            self.speed
+            y=self.r*numpy.cos(angle)+0.14909
+            z=self.r*numpy.sin(angle)+0.29142397
+
+            pos_matrix=(left_hand_matrix_template(self.x,y,z))
+
+            inita=geometricIK.callGeometricIK(numpy.matrix(pos_matrix))
+
+
+            jac = self.cros.solve_angles(inita)
+            matjacs= self.cros.map_of_jacs_into_matrix(jac)
+            moore= inverser.moore_penrose_equation(matjacs)
+
+            x=[
+                [self.x],
+                [y],
+                [z],
+                [0.7],
+                [1],
+                [0.5]
+            ]
+            vel=numpy.dot(moore,x)
+
+            new_angles=[0,0,0,0,0,0]
+
+            for i in range(0,6):
+                new_angles[i]=inita[i]+(vel[i][0]*self.speed)
+
+            #print inita
+            #print "----------"
+            #print new_angles
+
+
+            self.robot.SetDOFValues(numpy.radians(new_angles),[0,1,2,3,4,5])
+            T6 = self.robot.GetLinks()[6].GetTransform() # get the transform of link 6
+            T6[0][3] += 0.09
+            handles.append(misc.DrawAxes(self.env,T6,0.01,3))
+            #print inita
+            time.sleep(0.1)
             #
 
             """
@@ -192,7 +256,8 @@ class circular_movement(object):
 
 def main():
     lin=circular_movement()
-    lin.move_in_circle()
+    lin.IK_move_in_circle()
+    lin.Jac_move_in_circle()
     #look_for_matrix()
 
 
