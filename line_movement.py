@@ -126,11 +126,18 @@ class linear_movement(object):
         self.env.SetViewer('qtcoin') # attach viewer (optional)
         self.env.Load('pumaarm.dae') # load a simple scene
         self.robot = self.env.GetRobots()[0]
-
-
-
         self.cros= cross_product_mth.cross_product_method()
 
+    def __init__(self, environment, robot, a=1, b=1):
+        self.a=a
+        self.b=b
+        self.speed=0.01
+        self.z=1.54391792e+00
+        self.initx=-1.50100000e-01
+
+        self.env = environment
+        self.robot = robot
+        self.cros= cross_product_mth.cross_product_method()
 
     def Jac_move_in_line(self,amount=88):
 
@@ -208,7 +215,7 @@ class linear_movement(object):
         pause=raw_input("Enter To exit")
 
 
-    def IK_move_in_circle(self,amount=88):
+    def IK_move_in_line(self,amount=88):
 
         inita= [ 0,  10,  25,   0,  45,   0]
 
