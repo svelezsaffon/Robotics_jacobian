@@ -131,6 +131,16 @@ class circular_movement(object):
 
         self.cros= cross_product_mth.cross_product_method()
 
+    def __init__(self, environment, robot):
+        self.speed=0.1
+        self.x=0.65699357
+        self.r=0.15
+
+        self.env = environment
+        self.robot = robot
+
+        self.cros= cross_product_mth.cross_product_method()        
+
     def IK_move_in_circle(self,amount=80):
 
         angle=0.1
@@ -164,7 +174,7 @@ class circular_movement(object):
             T6[0][3] += 0.09
             handles.append(misc.DrawAxes(self.env,T6,0.01,3))
             #print inita
-            time.sleep(0.2)
+            time.sleep(0.1)
             #
 
             """
