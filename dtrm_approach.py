@@ -198,6 +198,27 @@ class dtrm_approach(object):
 
         return base_mat
 
+def getJacobian(theta1, theta2, theta3, theta4, theta5, theta6):
+    helper_functions.load_DH_table()
+    check_functions.load_DH_table()
+    inverser=inverse_jacobian.inverse_method()
+    dtrm = dtrm_approach()
+    angles=[theta1, theta2, theta3, theta4, theta5, theta6]
+    jac= dtrm.solve_angles(angles)
+    matjacs= dtrm.map_of_jacs_into_matrix(jac)
+    print matjacs
+
+def getInverseJacobian(theta1, theta2, theta3, theta4, theta5, theta6):
+    helper_functions.load_DH_table()
+    check_functions.load_DH_table()
+    inverser=inverse_jacobian.inverse_method()
+    dtrm = dtrm_approach()
+    angles=[theta1, theta2, theta3, theta4, theta5, theta6]
+    jac= dtrm.solve_angles(angles)
+    matjacs= dtrm.map_of_jacs_into_matrix(jac)
+    invJ = inverser.moore_penrose_equation(matjacs)
+    print invJ
+
 def main():
 
     helper_functions.load_DH_table()

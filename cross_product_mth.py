@@ -254,6 +254,23 @@ class cross_product_method(object):
 
         return base_mat
 
+def getJacobian(theta1, theta2, theta3, theta4, theta5, theta6):
+    inverser=inverse_jacobian.inverse_method()
+    cros = cross_product_method()
+    angles=[theta1, theta2, theta3, theta4, theta5, theta6]
+    jac= cros.solve_angles(angles)
+    matjacs= cros.map_of_jacs_into_matrix(jac)
+    print matjacs
+
+def getInverseJacobian(theta1, theta2, theta3, theta4, theta5, theta6):
+    inverser=inverse_jacobian.inverse_method()
+    cros = cross_product_method()
+    angles=[theta1, theta2, theta3, theta4, theta5, theta6]
+    jac= cros.solve_angles(angles)
+    matjacs= cros.map_of_jacs_into_matrix(jac)
+    invJ = inverser.moore_penrose_equation(matjacs)
+    print invJ
+
 def main():
 
 
