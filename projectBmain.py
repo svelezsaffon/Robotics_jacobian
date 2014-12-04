@@ -69,9 +69,51 @@ def main():
                         circ.Jac_move_in_circle()
                 elif selection == '7':
                         print ""
+                        print "Enter the equation parameters y=ax+b"
+
+                        a=100
+
+                        while a>0.5:
+                            a=float(raw_input("Enter a in range(0,0.5): "))
+
+                        b=100
+
+                        while b>0.4:
+                            b=float(raw_input("Enter b in range(0,0.5): "))
+
+                        speed=100
+
+                        while speed>0.4:
+                            speed=float(raw_input("Enter speed in range(0,0.5): "))
+
+                        lin.speed=speed
+                        lin.a=a
+                        lin.b=b
                         lin.IK_move_in_line()
                 elif selection == '8': 
                         print ""
+
+                        print "Enter the equation parameters y=ax+b"
+
+                        a=100
+
+                        while a>0.5:
+                            a=float(raw_input("Enter a in range(0,0.5): "))
+
+                        b=100
+
+                        while b>0.4:
+                            b=float(raw_input("Enter b in range(0,0.4): "))
+
+                        speed=100
+
+                        while speed>0.4:
+                            speed=float(raw_input("Enter speed in range(0,0.5): "))
+
+                        lin.speed=speed
+                        lin.a=a
+                        lin.b=b
+
                         lin.Jac_move_in_line()
                 elif selection == '9':
                         env.Destroy()

@@ -115,18 +115,7 @@ def look_for_matrix():
 
 class linear_movement(object):
 
-    def __init__(self,a=1,b=1):
-        self.a=a
-        self.b=b
-        self.speed=0.01
-        self.z=1.54391792e+00
-        self.initx=-1.50100000e-01
 
-        self.env=Environment()
-        self.env.SetViewer('qtcoin') # attach viewer (optional)
-        self.env.Load('pumaarm.dae') # load a simple scene
-        self.robot = self.env.GetRobots()[0]
-        self.cros= cross_product_mth.cross_product_method()
 
     def __init__(self, environment, robot, a=1, b=1):
         self.a=a
@@ -139,7 +128,7 @@ class linear_movement(object):
         self.robot = robot
         self.cros= cross_product_mth.cross_product_method()
 
-    def Jac_move_in_line(self,amount=88):
+    def Jac_move_in_line(self,amount=80):
 
         inita= [ 20,  10,  25,   0,  45,   0]
 
@@ -159,13 +148,6 @@ class linear_movement(object):
             pos_matrix=numpy.matrix(left_hand_matrix_template(xcopy,y,None))
 
             inita=geometricIK.callGeometricIK(numpy.matrix(pos_matrix))
-
-
-            #self.robot.SetDOFValues(numpy.radians(inita),[0,1,2,3,4,5])
-            #T6 = self.robot.GetLinks()[6].GetTransform() # get the transform of link 6
-            #T6[0][3] += 0.09
-            #handles.append(misc.DrawAxes(self.env,T6,0.01,3))
-
 
 
             jac=self.cros.solve_angles(inita)
@@ -192,11 +174,6 @@ class linear_movement(object):
             for i in range(0,6):
                 new_angles[i]=inita[i]+(vel[i][0]*self.speed)
 
-            #print inita
-            #print "----------"
-            #print new_angles
-
-
             self.robot.SetDOFValues(numpy.radians(new_angles),[0,1,2,3,4,5])
 
             """Paint the line """
@@ -215,7 +192,7 @@ class linear_movement(object):
         pause=raw_input("Enter To exit")
 
 
-    def IK_move_in_line(self,amount=88):
+    def IK_move_in_line(self,amount=80):
 
         inita= [ 0,  10,  25,   0,  45,   0]
 
